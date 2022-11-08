@@ -78,6 +78,7 @@ export const PessoaForm: React.FC<PessoaFormProps> = ({ control, register }) => 
                       placeholder="20"
                       fullWidth
                       type="number"
+                      InputProps={{ inputProps: { min: 0 } }}
                     />
                   )}
                 />
