@@ -9,6 +9,7 @@ import {
   FormHelperText,
   Popper,
   PopperProps,
+  useTheme,
 } from "@mui/material";
 import { ControllerRenderProps } from "react-hook-form";
 import { v4 } from "uuid";
@@ -190,11 +191,11 @@ export const LovHelperText: React.FC<{ error: IBaseLovProps["error"]; helperText
   helperText,
   error,
 }) => {
-  const classes = {} as any;
+  const theme = useTheme();
 
   return (
     <div className="w-full ml-[0.1125rem]">
-      <FormHelperText classes={{ root: error ? classes.errorColor : "" }}> {helperText} </FormHelperText>
+      <FormHelperText style={{ color: error ? theme.palette.error.main : "auto" }}> {helperText} </FormHelperText>
     </div>
   );
 };

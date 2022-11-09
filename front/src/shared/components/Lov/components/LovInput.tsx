@@ -1,5 +1,6 @@
 import { AutocompleteRenderInputParams, Box, CircularProgress, TextField, useTheme } from "@mui/material";
 import React from "react";
+import "../lov.scss";
 import { FiPlus } from "react-icons/fi";
 
 interface ILovInput {
@@ -32,7 +33,7 @@ const LovInput: React.FC<ILovInput> = ({ onAddOpen, placeholder, params, error =
         placeholder={placeholder}
         className="lovTextField"
         variant="outlined"
-        classes={{ root: error ? classes.borderErrorColor : undefined }}
+        error={error}
         InputProps={{
           ...params.InputProps,
           className: `${params.InputProps.className}`,

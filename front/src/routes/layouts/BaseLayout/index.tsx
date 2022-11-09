@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 export const BaseLayout: React.FC = () => {
   return (
-    <div className="w-screen min-h-screen flex items-center flex-col">
+    <div className="max-w-[100vw] min-h-screen flex items-center flex-col">
       <header className="bg-purple-700 w-full flex items-center justify-between py-5 px-9 text-white">
         <span className="text-xl font-bold">IBGE</span>
 

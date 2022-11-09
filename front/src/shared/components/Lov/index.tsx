@@ -132,7 +132,7 @@ const Lov = forwardRef<ILovRef, ILovProps>((props, ref) => {
   }, [open]);
 
   return (
-    <div className={`flex w-full flex-col ${props.className ?? ""}`}>
+    <div className={`flex w-full flex-col ${props.className ?? ""} ${error ? "placeholder-error" : ""}`}>
       <Autocomplete
         {...field}
         {...lovCommomProps}
@@ -146,7 +146,7 @@ const Lov = forwardRef<ILovRef, ILovProps>((props, ref) => {
             params={params}
             loading={loading}
             placeholder={props.placeholder}
-            error={props.error}
+            error={error}
             onAddOpen={props.onAddOpen}
           />
         )}

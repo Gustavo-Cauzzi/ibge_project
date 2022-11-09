@@ -12,6 +12,16 @@
   border-radius: 30px 30px 4px 4px;
 }
 
+.placeholder-error {
+  input::placeholder {
+    color: #f44336 !important;
+  }
+  svg {
+    color: #f44336 !important;
+    // filter: invert(34%) sepia(53%) saturate(3128%) hue-rotate(342deg) brightness(98%) contrast(95%) !important;
+  }
+}
+
 .lovInput {
   border-radius: 5px;
   input::placeholder {

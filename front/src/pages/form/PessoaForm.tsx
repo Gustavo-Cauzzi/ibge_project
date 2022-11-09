@@ -1,13 +1,35 @@
 import { Autocomplete, Button, TextField } from "@mui/material";
 import React from "react";
-import { Control, Controller, useFieldArray, UseFormRegister } from "react-hook-form";
+import { Control, Controller, FieldErrorsImpl, useFieldArray } from "react-hook-form";
 import { FiPlus, FiTrash } from "react-icons/fi";
+import { v4 } from "uuid";
 import { defaultPessoa, FormDefaultValues } from ".";
 import { escolaridadeOptions } from "../../shared/@types/form";
 
 interface PessoaFormProps {
   control: Control<FormDefaultValues, any>;
-  register: UseFormRegister<FormDefaultValues>;
+  errors: Partial<
+    FieldErrorsImpl<{
+      idResidencia: number;
+      cep: string;
+      cidade: string;
+      bairro: string;
+      estado: {
+        id: string;
+        estado: string;
+      };
+      numero: string;
+      pessoas: {
+        cpf: string;
+        nome: string;
+        idade: number;
+        escolaridade: {
+          id: number;
+          description: string;
+        };
+      }[];
+    }>
+  >;
 }
 
 const formatCpf = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -19,11 +41,15 @@ const formatCpf = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)
   return e;
 };
 
-export const PessoaForm: React.FC<PessoaFormProps> = ({ control, register }) => {
+let pessoaKeyIncremental = 1;
+
+export const PessoaForm: React.FC<PessoaFormProps> = ({ control, errors: rawErrors }) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "pessoas",
   });
+
+  const errors = rawErrors.pessoas ?? [];
 
   return (
     <div className="gap-2 flex flex-col">
@@ -31,8 +57,8 @@ export const PessoaForm: React.FC<PessoaFormProps> = ({ control, register }) => 
         <h1 className="text-3xl text-main">Pessoas do domicílio</h1>
       </div>
 
-      {fields.map((_pessoa, i, arr) => (
-        <React.Fragment key={i}>
+      {fields.map((pessoa, i, arr) => (
+        <React.Fragment key={pessoa.key}>
           <div className="flex w-full justify-between">
             <h1 className="text-xl">Pessoa {i + 1}</h1>
 
@@ -41,7 +67,7 @@ export const PessoaForm: React.FC<PessoaFormProps> = ({ control, register }) => 
             </Button>
           </div>
 
-          <div className="flex w-full gap-2 flex-col">
+          <div className="flex w-full gap-6 flex-col">
             <div className="flex w-full gap-2 flex-col xsmd:flex-row">
               <Controller
                 control={control}
@@ -54,6 +80,8 @@ export const PessoaForm: React.FC<PessoaFormProps> = ({ control, register }) => 
                     label="CPF"
                     fullWidth
                     placeholder="123.456.789-00"
+                    error={!!errors[i]?.cpf}
+                    helperText={errors[i]?.cpf?.message ?? ""}
                   />
                 )}
               />
@@ -63,7 +91,15 @@ export const PessoaForm: React.FC<PessoaFormProps> = ({ control, register }) => 
                   control={control}
                   name={`pessoas.${i}.nome`}
                   render={({ field }) => (
-                    <TextField {...field} className="flex-[0.75]" label="Nome" fullWidth placeholder="João da Silva" />
+                    <TextField
+                      {...field}
+                      className="flex-[0.75]"
+                      label="Nome"
+                      fullWidth
+                      placeholder="João da Silva"
+                      error={!!errors[i]?.nome}
+                      helperText={errors[i]?.nome?.message ?? ""}
+                    />
                   )}
                 />
 
@@ -78,6 +114,8 @@ export const PessoaForm: React.FC<PessoaFormProps> = ({ control, register }) => 
                       placeholder="20"
                       fullWidth
                       type="number"
+                      error={!!errors[i]?.idade}
+                      helperText={errors[i]?.idade?.message ?? ""}
                       InputProps={{ inputProps: { min: 0 } }}
                     />
                   )}
@@ -93,10 +131,20 @@ export const PessoaForm: React.FC<PessoaFormProps> = ({ control, register }) => 
                   <Autocomplete
                     {...field}
                     value={field.value}
+                    noOptionsText="Sem resultados"
+                    onChange={(_e, newValue) => field.onChange(newValue)}
                     options={escolaridadeOptions}
                     getOptionLabel={(option) => option.description}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
-                    renderInput={(params) => <TextField {...params} placeholder="Escolaridade" label="Escolaridade" />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Escolaridade"
+                        label="Escolaridade"
+                        error={!!errors[i]?.escolaridade}
+                        helperText={errors[i]?.escolaridade?.message ?? ""}
+                      />
+                    )}
                   />
                 )}
               />
@@ -108,7 +156,11 @@ export const PessoaForm: React.FC<PessoaFormProps> = ({ control, register }) => 
       ))}
 
       <div className="flex mt-8 mb-4">
-        <Button startIcon={<FiPlus />} variant="outlined" onClick={() => append(defaultPessoa)}>
+        <Button
+          startIcon={<FiPlus />}
+          variant="outlined"
+          onClick={() => append({ ...defaultPessoa, key: pessoaKeyIncremental++ })}
+        >
           Nova pessoa
         </Button>
       </div>

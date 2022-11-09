@@ -35,5 +35,6 @@ export const escolaridadeOptions: Option[] = [
     { id: 6, description: "Ensino médio completo" },
     { id: 7, description: "Ensino superior incompleto" },
     { id: 8, description: "Ensino superior completo" },
-    { id: 9, description: "Metrado/Doutorado " },
+    { id: 9, description: "Mestrado/Doutorado " },
 ];
+export const escolaridadeIdPossibilities = escolaridadeOptions.map((esc) => esc.id);
