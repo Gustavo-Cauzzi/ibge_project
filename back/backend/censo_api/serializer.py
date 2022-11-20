@@ -5,7 +5,7 @@ from censo_api.models import Pessoa, Residencia
 class ResidenciaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Residencia
-        fields = ("cidade", "bairro", "estado", "cep", "numero_residencia")
+        fields = ("cidade", "bairro", "estado", "cep", "numero", "id")
 
 
 class PessoaSerializer(serializers.ModelSerializer):

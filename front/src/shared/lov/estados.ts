@@ -4,7 +4,11 @@ interface EstadoResponse {
     id: number;
     sigla: string;
     nome: string;
-    regiao: any; // foda-se
+    regiao: {
+        id: number;
+        sigla: "N" | "S" | "SE" | "NE" | "CE";
+        nome: "Norte" | "Sul" | "Centro-Oeste" | "Nordeste" | "Sudeste";
+    };
 }
 
 export const getAllEstados = async () => {

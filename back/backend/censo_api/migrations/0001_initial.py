@@ -28,13 +28,13 @@ class Migration(migrations.Migration):
                 ("estado", models.CharField(max_length=40, verbose_name="Estado")),
                 ("cep", models.CharField(max_length=8, verbose_name="CEP")),
                 (
-                    "numero_residencia",
+                    "numero",
                     models.IntegerField(verbose_name="Número da residência"),
                 ),
             ],
             options={
                 "verbose_name": "Cadastro de residência",
-                "unique_together": {("cep", "numero_residencia")},
+                "unique_together": {("cep", "numero")},
             },
         ),
         migrations.CreateModel(

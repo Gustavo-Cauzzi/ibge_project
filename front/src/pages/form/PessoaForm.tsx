@@ -2,9 +2,9 @@ import { Autocomplete, Button, TextField } from "@mui/material";
 import React from "react";
 import { Control, Controller, FieldErrorsImpl, useFieldArray } from "react-hook-form";
 import { FiPlus, FiTrash } from "react-icons/fi";
-import { v4 } from "uuid";
 import { defaultPessoa, FormDefaultValues } from ".";
-import { escolaridadeOptions } from "../../shared/@types/form";
+import { formatCpf } from "../../shared/utils/utils";
+import { escolaridadeOptions } from "./types";
 
 interface PessoaFormProps {
   control: Control<FormDefaultValues, any>;
@@ -32,16 +32,12 @@ interface PessoaFormProps {
   >;
 }
 
-const formatCpf = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-  e.target.value = e.target.value
-    .replace(/\D/g, "")
-    .replace(/(\d{3})(\d)/, "$1.$2")
-    .replace(/(\d{3})(\d)/, "$1.$2")
-    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+let pessoaKeyIncremental = 1;
+
+const formatCpfEvent = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  e.target.value = formatCpf(e.target.value);
   return e;
 };
-
-let pessoaKeyIncremental = 1;
 
 export const PessoaForm: React.FC<PessoaFormProps> = ({ control, errors: rawErrors }) => {
   const { fields, append, remove } = useFieldArray({
@@ -75,7 +71,7 @@ export const PessoaForm: React.FC<PessoaFormProps> = ({ control, errors: rawErro
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    onChange={(e) => field.onChange(formatCpf(e))}
+                    onChange={(e) => field.onChange(formatCpfEvent(e))}
                     className="flex-[0.3]"
                     label="CPF"
                     fullWidth

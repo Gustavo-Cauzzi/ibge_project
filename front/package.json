@@ -32,6 +32,7 @@
         "@types/axios": "^0.14.0",
         "@types/react": "^18.0.17",
         "@types/react-dom": "^18.0.6",
+        "@types/react-loading-overlay": "^1.0.1",
         "@types/uuid": "^8.3.4",
         "@vitejs/plugin-react": "^2.1.0",
         "autoprefixer": "^10.4.12",

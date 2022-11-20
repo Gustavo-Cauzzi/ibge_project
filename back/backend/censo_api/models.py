@@ -17,9 +17,9 @@ ESCOLARIDADE = [
 class Residencia(models.Model):
 
     class Meta:
-        unique_together = ("cep", "numero_residencia")
+        unique_together = ("cep", "numero")
         verbose_name = "Cadastro de residência"
-    
+
     cidade = models.CharField(max_length=40, verbose_name="Cidade")
 
     bairro = models.CharField(max_length=40, verbose_name="Bairro")
@@ -28,10 +28,10 @@ class Residencia(models.Model):
 
     cep = models.CharField(max_length=8, verbose_name="CEP")
 
-    numero_residencia = models.IntegerField(verbose_name="Número da residência")
+    numero = models.IntegerField(verbose_name="Número da residência")
 
     def __str__(self):
-        return "Nº residência " + str(self.numero_residencia) + f" - Bairro {self.bairro} - {self.cidade}"
+        return "Nº residência " + str(self.numero) + f" - Bairro {self.bairro} - {self.cidade}"
 
 
 class Pessoa(models.Model):
@@ -45,7 +45,6 @@ class Pessoa(models.Model):
     escolaridade = models.IntegerField(choices=ESCOLARIDADE, verbose_name="Escolaridade")
 
     residencia = models.ForeignKey(Residencia, on_delete=models.CASCADE, verbose_name="Residência")
-
 
     def __str__(self):
         return self.nome
