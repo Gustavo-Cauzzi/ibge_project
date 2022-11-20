@@ -108,8 +108,6 @@ export const Form: React.FC = () => {
       return;
     }
 
-    await api.delete("/residencias/19");
-
     try {
       const { id } = await handleSaveResidencia(data);
       await handleSavePessoas(data.pessoas, id!);
