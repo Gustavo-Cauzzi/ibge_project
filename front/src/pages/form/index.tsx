@@ -128,8 +128,6 @@ export const Form: React.FC = () => {
         text: "Salvando residência...",
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       const residenciaResponse = await api.post<Residencia>("/residencias/", {
         bairro: data.bairro,
         cep: formatCepApi(data.cep),
