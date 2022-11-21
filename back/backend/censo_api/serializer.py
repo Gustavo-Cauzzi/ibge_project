@@ -9,6 +9,10 @@ class ResidenciaSerializer(serializers.ModelSerializer):
 
 
 class PessoaSerializer(serializers.ModelSerializer):
+    residencia = ResidenciaSerializer(
+        read_only=True,
+    )
+
     class Meta:
         model = Pessoa
         fields = ("nome", "cpf", "idade", "escolaridade", "residencia")

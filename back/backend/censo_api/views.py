@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 
 class PessoaViewSet(viewsets.ModelViewSet):
-    queryset = Pessoa.objects.all()
+    queryset = Pessoa.objects.all().prefetch_related('residencia')
     serializer_class = PessoaSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['escolaridade', 'residencia__cidade', 'residencia__bairro', 'residencia__estado']
