@@ -11,6 +11,8 @@ interface EstadoResponse {
     };
 }
 
+export type EstadoOption = Awaited<ReturnType<typeof getAllEstados>>[number];
+
 export const getAllEstados = async () => {
     const response = await axios.get<EstadoResponse[]>("https://servicodados.ibge.gov.br/api/v1/localidades/estados");
     return response.data.map((resp) => ({ id: resp.sigla, estado: resp.nome }));

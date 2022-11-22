@@ -9,14 +9,12 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { escolaridadeOptions, IBGEForm, PessoaForm as PessoaFormType } from "./types";
 import Lov, { ILovRef } from "../../shared/components/Lov";
-import { getAllEstados } from "../../shared/lov/estados";
+import { EstadoOption, getAllEstados } from "../../shared/lov/estados";
 import { PessoaForm } from "./PessoaForm";
 import { Residencia } from "../../shared/@types/residencia";
 import { formatCep, formatCepApi, formatCpf, formatCpfApi, isCpfValid, validateCep } from "../../shared/utils/utils";
 import { Pessoa } from "../../shared/@types/pessoa";
 import { LoadingOverlay } from "../../shared/components/LoadingOverlay";
-
-type EstadoOption = Awaited<ReturnType<typeof getAllEstados>>[number];
 
 export type FormDefaultValues = Omit<IBGEForm, "estado" | "pessoas" | "numero"> & {
   estado: null | EstadoOption;
