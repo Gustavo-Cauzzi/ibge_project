@@ -1,8 +1,7 @@
-import { PessoaSearch } from "../../../shared/@types/pessoa";
-import Chart from "react-apexcharts";
-import ptbr from "apexcharts/dist/locales/pt-br.json";
 import { ApexOptions } from "apexcharts";
-import { colorScheme2, groupBy, groupByAndMap, mapToArray } from "../../../shared/utils/utils";
+import Chart from "react-apexcharts";
+import { PessoaSearch } from "../../../shared/@types/pessoa";
+import { colorScheme2, groupByAndMap, mapToArray } from "../../../shared/utils/utils";
 import { escolaridadeOptions } from "../../form/types";
 
 interface EscolaridadeRealationProps {
@@ -60,6 +59,6 @@ export const EscolaridadeRealation: React.FC<EscolaridadeRealationProps> = ({ da
   };
 
   return (
-    <Chart options={escolaridadeConfig} series={escolaridadeValues.map((v) => v.total)} type="donut" width="550" />
+    <Chart options={escolaridadeConfig} series={escolaridadeValues.map((v) => v.total)} type="donut" width="600" />
   );
 };

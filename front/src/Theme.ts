@@ -26,7 +26,20 @@ export const theme = createTheme({
                 },
             },
         },
-
+        MuiPaper: {
+            styleOverrides: {
+                rounded: {
+                    borderRadius: 10,
+                },
+            },
+        },
+        MuiAccordion: {
+            styleOverrides: {
+                rounded: {
+                    borderRadius: 10,
+                },
+            },
+        },
         MuiDataGrid: {
             defaultProps: {
                 disableColumnMenu: process.env.NODE_ENV === "production",

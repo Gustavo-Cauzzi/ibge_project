@@ -7,6 +7,7 @@ import {
   Button,
   TextField,
   Typography,
+  Paper,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -257,7 +258,7 @@ export const Home: React.FC = () => {
 
           {/* https://mui.com/pt/x/react-data-grid/ */}
           {hasMadeFirstSearch && (
-            <div className="flex w-full justify-center items-center my-10">
+            <Paper className="flex w-full justify-center items-center my-10 max-w-6xl">
               <DataGrid
                 className="max-w-6xl"
                 rows={data}
@@ -299,11 +300,11 @@ export const Home: React.FC = () => {
                 ]}
                 getRowId={(row) => row.cpf}
               />
-            </div>
+            </Paper>
           )}
         </form>
 
-        <div className="flex w-full flex-col items-center mb-10">
+        <div className="flex w-full justify-center mb-10  ">
           <HomeAnalytics data={data} />
         </div>
       </main>
