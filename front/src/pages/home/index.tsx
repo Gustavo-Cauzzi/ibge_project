@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FiChevronDown, FiFilePlus, FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,7 @@ import { PessoaSearch } from "../../shared/@types/pessoa";
 import { LoadingOverlay } from "../../shared/components/LoadingOverlay";
 import { api } from "../../shared/services/api";
 import { escolaridadeOptions } from "../form/types";
+import { HomeAnalytics } from "./HomeAnalytics";
 interface DefaultValues {
   idadeIni: string;
   idadeFim: string;
@@ -77,14 +78,19 @@ export const Home: React.FC = () => {
   const [data, setData] = useState<PessoaSearch[]>([]);
   const [hasMadeFirstSearch, setHasMadeFirstSearch] = useState(false);
 
+  // https://react-hook-form.com/
   const {
     control,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm({
     defaultValues,
     resolver: yupResolver(schema),
   });
+
+  // Executar a busca dos dados quando a tela é carregada
+  useEffect(() => void onSubmit(getValues()), []);
 
   const onSubmit = async (data: DefaultValues) => {
     setHasMadeFirstSearch(true);
@@ -116,8 +122,8 @@ export const Home: React.FC = () => {
           </Button>
         </div>
 
-        <form className="flex w-full flex-col gap-3 items-center" onSubmit={handleSubmit(onSubmit)}>
-          <Accordion defaultExpanded className="print:hidden max-w-6xl w-full">
+        <form className="flex w-full mt-9 flex-col gap-3 items-center" onSubmit={handleSubmit(onSubmit)}>
+          <Accordion className="print:hidden max-w-6xl w-full">
             <AccordionSummary expandIcon={<FiChevronDown />} aria-controls="panel1a-content" id="panel1a-header">
               <Typography>Filtros:</Typography>
             </AccordionSummary>
@@ -296,6 +302,10 @@ export const Home: React.FC = () => {
             </div>
           )}
         </form>
+
+        <div className="flex w-full flex-col items-center mb-10">
+          <HomeAnalytics data={data} />
+        </div>
       </main>
     </>
   );
