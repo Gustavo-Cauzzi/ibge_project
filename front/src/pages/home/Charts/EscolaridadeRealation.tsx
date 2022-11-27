@@ -52,7 +52,6 @@ export const EscolaridadeRealation: React.FC<EscolaridadeRealationProps> = ({ da
       y: {
         title: {
           formatter: (_value: any, opts: { seriesIndex: number }) => {
-            console.log("opts.seriesIndex: ", opts.seriesIndex);
             return escolaridadeValues[opts.seriesIndex].escolaridadeName;
           },
         } as any, // aaaaaaaa typescript errado da lib!!!!!!!
