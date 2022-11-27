@@ -55,3 +55,14 @@ export function mapToArray<K, V, R>(m: Map<K, V>, transformer: (key: K, item: V)
 export const colorScheme1 = ["#7E22CE", "#E500A3", "#FF3374", "#FF8150", "#FFC148", "#F9F871"];
 export const colorScheme2 = ["#7E22CE", "#A347F2", "#C76AFF", "#ED8CFF", "#FFAFFF"];
 export const colorScheme3 = ["#7E22CE", "#0061FD", "#0098FA", "#00A9D0", "#00B69C"];
+export const colorScheme4 = [
+    "#ED8CFF",
+    "#FFAFFF",
+    "#D6B5F3",
+    "#CCA3F0",
+    "#B980EA",
+    "#A65DE4",
+    "#923ADF",
+    "#7E22CE",
+    "#611A9E",
+].reverse();

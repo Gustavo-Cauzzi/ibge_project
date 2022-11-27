@@ -1,7 +1,7 @@
 import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
 import { PessoaSearch } from "../../../shared/@types/pessoa";
-import { colorScheme2, groupByAndMap, mapToArray } from "../../../shared/utils/utils";
+import { colorScheme4, groupByAndMap, mapToArray } from "../../../shared/utils/utils";
 import { escolaridadeOptions } from "../../form/types";
 
 interface EscolaridadeRealationProps {
@@ -9,7 +9,7 @@ interface EscolaridadeRealationProps {
   colorScheme?: `#${string}`[];
 }
 
-export const EscolaridadeRealation: React.FC<EscolaridadeRealationProps> = ({ data, colorScheme = colorScheme2 }) => {
+export const EscolaridadeRealation: React.FC<EscolaridadeRealationProps> = ({ data, colorScheme = colorScheme4 }) => {
   const escolaridadeValues = mapToArray(
     groupByAndMap(
       data,
