@@ -104,10 +104,6 @@ export const Form: React.FC = () => {
     resolver: yupResolver(schema),
   });
 
-  useEffect(() => {
-    console.log("errors", errors);
-  }, [errors]);
-
   const onSubmit = async (data: FormDefaultValues) => {
     if (!data.estado) {
       toast.error("Preencha os dados");
