@@ -1,5 +1,4 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { api } from "../../shared/services/api";
 import { Button, CircularProgress, TextField, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -7,14 +6,16 @@ import toast from "react-hot-toast";
 import { FiChevronsLeft, FiSave } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import { escolaridadeOptions, IBGEForm, PessoaForm as PessoaFormType } from "./types";
+import { number } from "yup/lib/locale";
+import { Pessoa } from "../../shared/@types/pessoa";
+import { Residencia } from "../../shared/@types/residencia";
+import { LoadingOverlay } from "../../shared/components/LoadingOverlay";
 import Lov, { ILovRef } from "../../shared/components/Lov";
 import { EstadoOption, getAllEstados } from "../../shared/lov/estados";
+import { api } from "../../shared/services/api";
+import { formatCep, formatCepApi, formatCpfApi, isCpfValid, validateCep } from "../../shared/utils/utils";
 import { PessoaForm } from "./PessoaForm";
-import { Residencia } from "../../shared/@types/residencia";
-import { formatCep, formatCepApi, formatCpf, formatCpfApi, isCpfValid, validateCep } from "../../shared/utils/utils";
-import { Pessoa } from "../../shared/@types/pessoa";
-import { LoadingOverlay } from "../../shared/components/LoadingOverlay";
+import { escolaridadeOptions, IBGEForm, PessoaForm as PessoaFormType } from "./types";
 
 export type FormDefaultValues = Omit<IBGEForm, "estado" | "pessoas" | "numero"> & {
   estado: null | EstadoOption;
@@ -72,7 +73,14 @@ const schema = yup.object({
   ),
 });
 
+type SavedResidencia = {
+  cep: string;
+  numero: string;
+  id: number;
+};
+
 export const Form: React.FC = () => {
+  const [alreadySavedResidencias, setAlreadySavedResidencias] = useState<SavedResidencia[]>([]);
   const [loadingInfo, setLoadingInfo] = useState({
     isLoading: false,
     text: "",
@@ -107,8 +115,17 @@ export const Form: React.FC = () => {
     }
 
     try {
-      const { id } = await handleSaveResidencia(data);
-      await handleSavePessoas(data.pessoas, id!);
+      const saved = alreadySavedResidencias.find(
+        (residencia) => residencia.cep === data.cep && residencia.numero === data.numero
+      );
+
+      const id = saved ? saved.id : (await handleSaveResidencia(data)).id!;
+
+      if (!saved) {
+        setAlreadySavedResidencias((state) => [...state, { cep: data.cep, numero: data.numero, id }]);
+      }
+
+      await handleSavePessoas(data.pessoas, id);
       toast.success("Dados salvos com sucesso");
       navigate("/");
     } catch (e) {}
@@ -161,9 +178,7 @@ export const Form: React.FC = () => {
       );
     } catch (e) {
       toast.error("Pessoa(s) já cadastrada(s)!");
-      console.log("delete");
       api.delete(`/residencias/${idResidencia}`);
-      console.log("delete2");
       throw e;
     }
   };

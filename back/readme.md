@@ -82,7 +82,7 @@ Filtros sobre cidades, bairros e estados foram aplicados diretamente para as pes
 
 Exemplo de url para acessar pessoas com filtros:
 
-http://localhost:8000/pessoas/?escolaridade=7&residencia**cidade=Caxias+do+Sul&residencia**bairro=Santa+Catarina&residencia\_\_estado=Rio+Grande+do+Sul
+http://localhost:8000/pessoas/?escolaridade=7&residencia\_\_cidade=Caxias+do+Sul&residencia\_\_bairro=Santa+Catarina&residencia\_\_estado=Rio+Grande+do+Sul
 
 Filtros:
 

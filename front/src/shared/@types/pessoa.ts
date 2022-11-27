@@ -1,5 +1,3 @@
-import { Residencia } from "./residencia";
-
 export type PessoaEscolaridadeValues = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 export interface Pessoa {
@@ -15,5 +13,8 @@ export interface PessoaSearch {
     cpf: string;
     idade: number;
     escolaridade: PessoaEscolaridadeValues;
-    residencia: Residencia;
+    residencia: number;
+    cidade: string;
+    bairro: string;
+    estado: string;
 }

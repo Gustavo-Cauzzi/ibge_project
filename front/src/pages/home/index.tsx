@@ -5,25 +5,30 @@ import {
   AccordionSummary,
   Autocomplete,
   Button,
+  Menu,
+  MenuItem,
+  Paper,
   TextField,
   Typography,
-  Paper,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { FiChevronDown, FiFilePlus, FiSearch } from "react-icons/fi";
+import { FiChevronDown, FiDownload, FiFilePlus, FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { object, string } from "yup";
 import { PessoaSearch } from "../../shared/@types/pessoa";
 import { LoadingOverlay } from "../../shared/components/LoadingOverlay";
 import { api } from "../../shared/services/api";
+import exportToXLSX from "../../shared/utils/exportToXLSX";
 import { escolaridadeOptions } from "../form/types";
 import { HomeAnalytics } from "./HomeAnalytics";
+import "./styles.scss";
+
 interface DefaultValues {
   idadeIni: string;
   idadeFim: string;
-  escolaridade: typeof escolaridadeOptions[number] | null;
+  escolaridade: typeof escolaridadeOptions;
   cidade: string;
   bairro: string;
   estado: string;
@@ -34,7 +39,7 @@ const defaultValues: DefaultValues = {
   idadeFim: "",
   bairro: "",
   cidade: "",
-  escolaridade: null,
+  escolaridade: [],
   estado: "",
 };
 
@@ -72,12 +77,14 @@ const schema = object().shape(
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
+  const [pageSize, setPageSize] = useState(10);
   const [loadingInfo, setLoadingInfo] = useState({
     isLoading: false,
     text: "",
   });
   const [data, setData] = useState<PessoaSearch[]>([]);
   const [hasMadeFirstSearch, setHasMadeFirstSearch] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   // https://react-hook-form.com/
   const {
@@ -100,14 +107,54 @@ export const Home: React.FC = () => {
       text: "Buscando dados...",
     });
 
-    const response = await api.get<PessoaSearch[]>("/pessoas/");
+    const response = await api.get<PessoaSearch[]>("/pessoas/", {
+      params: {
+        residencia__cidade: data.cidade,
+        residencia__bairro: data.bairro,
+        residencia__estado: data.estado,
+      },
+    });
 
-    setData(response.data);
+    const escolaridadeIds = data.escolaridade.map((escolaridade) => escolaridade.id);
+
+    setData(
+      response.data.filter(
+        (pessoa) =>
+          (data.idadeIni ? Number(data.idadeIni) <= pessoa.idade : true) &&
+          (data.idadeFim ? Number(data.idadeFim) >= pessoa.idade : true) &&
+          (escolaridadeIds.length ? escolaridadeIds.includes(pessoa.escolaridade) : true)
+      )
+    );
 
     setLoadingInfo({
       isLoading: false,
       text: "",
     });
+  };
+
+  const handleExportPdf = () => {
+    const previousPageSize = pageSize;
+    setPageSize(100);
+    window.print();
+    setPageSize(previousPageSize);
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+
+  const handleExportXlsx = () => {
+    const parsedData = data.map(({ residencia, ...row }) => ({
+      ...row,
+      escolaridade: escolaridadeOptions[row.escolaridade - 1].description,
+    }));
+    exportToXLSX(parsedData, "Dados-ibge");
   };
 
   return (
@@ -178,6 +225,7 @@ export const Home: React.FC = () => {
                       noOptionsText="Sem resultados"
                       onChange={(_e, newValue) => field.onChange(newValue)}
                       options={escolaridadeOptions}
+                      multiple
                       getOptionLabel={(option) => option.description}
                       isOptionEqualToValue={(option, value) => option.id === value.id}
                       renderInput={(params) => (
@@ -258,10 +306,35 @@ export const Home: React.FC = () => {
 
           {/* https://mui.com/pt/x/react-data-grid/ */}
           {hasMadeFirstSearch && (
-            <Paper className="flex w-full justify-center items-center my-10 max-w-6xl">
+            <Paper className="flex w-full flex-col justify-center items-center my-10 max-w-6xl">
+              <div className="flex w-full justify-end print:hidden">
+                <Button startIcon={<FiDownload />} onClick={handleClick}>
+                  Exportar
+                </Button>
+                <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                  <MenuItem
+                    onClick={() => {
+                      handleExportPdf();
+                      setAnchorEl(null);
+                    }}
+                  >
+                    PDF
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      handleExportXlsx();
+                      setAnchorEl(null);
+                    }}
+                  >
+                    XLSX
+                  </MenuItem>
+                </Menu>
+              </div>
               <DataGrid
-                className="max-w-6xl"
+                className="max-w-6xl grow w-full"
                 rows={data}
+                pageSize={pageSize}
+                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                 columns={[
                   {
                     field: "nome",
@@ -283,19 +356,19 @@ export const Home: React.FC = () => {
                     field: "estado",
                     headerName: "Estado",
                     flex: 1,
-                    valueGetter: (p) => p.row.residencia.estado,
+                    valueGetter: (p) => p.row.estado,
                   },
                   {
                     field: "cidade",
                     headerName: "Cidade",
                     flex: 1,
-                    valueGetter: (p) => p.row.residencia.cidade,
+                    valueGetter: (p) => p.row.cidade,
                   },
                   {
                     field: "bairro",
                     headerName: "Bairro",
                     flex: 1,
-                    valueGetter: (p) => p.row.residencia.bairro,
+                    valueGetter: (p) => p.row.bairro,
                   },
                 ]}
                 getRowId={(row) => row.cpf}
@@ -304,7 +377,7 @@ export const Home: React.FC = () => {
           )}
         </form>
 
-        <div className="flex w-full justify-center mb-10  ">
+        <div className="flex w-full justify-center mb-10">
           <HomeAnalytics data={data} />
         </div>
       </main>
