@@ -14,7 +14,7 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { FiChevronDown, FiDownload, FiFilePlus, FiSearch } from "react-icons/fi";
+import { FiChevronDown, FiChevronsUp, FiChevronUp, FiDownload, FiFilePlus, FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { object, string } from "yup";
 import { PessoaSearch } from "../../shared/@types/pessoa";
@@ -77,7 +77,7 @@ const schema = object().shape(
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(25);
   const [loadingInfo, setLoadingInfo] = useState({
     isLoading: false,
     text: "",
@@ -171,7 +171,7 @@ export const Home: React.FC = () => {
         </div>
 
         <form className="flex w-full mt-9 flex-col gap-3 items-center" onSubmit={handleSubmit(onSubmit)}>
-          <Accordion className="print:hidden max-w-6xl w-full">
+          <Accordion defaultExpanded className="print:hidden max-w-6xl w-full">
             <AccordionSummary expandIcon={<FiChevronDown />} aria-controls="panel1a-content" id="panel1a-header">
               <Typography>Filtros:</Typography>
             </AccordionSummary>
@@ -379,6 +379,19 @@ export const Home: React.FC = () => {
 
         <div className="flex w-full justify-center mb-10">
           <HomeAnalytics data={data} />
+        </div>
+
+        <div className="flex w-full justify-center mb-2">
+          <div className="flex w-full max-w-6xl justify-end">
+            <Button
+              startIcon={<FiChevronsUp />}
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            >
+              Voltar ao topo
+            </Button>
+          </div>
         </div>
       </main>
     </>
