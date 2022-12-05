@@ -14,6 +14,7 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { FiChevronDown, FiChevronsUp, FiChevronUp, FiDownload, FiFilePlus, FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { object, string } from "yup";
@@ -107,24 +108,28 @@ export const Home: React.FC = () => {
       text: "Buscando dados...",
     });
 
-    const response = await api.get<PessoaSearch[]>("/pessoas/", {
-      params: {
-        residencia__cidade: data.cidade,
-        residencia__bairro: data.bairro,
-        residencia__estado: data.estado,
-      },
-    });
+    try {
+      const response = await api.get<PessoaSearch[]>("/pessoas/", {
+        params: {
+          residencia__cidade: data.cidade,
+          residencia__bairro: data.bairro,
+          residencia__estado: data.estado,
+        },
+      });
 
-    const escolaridadeIds = data.escolaridade.map((escolaridade) => escolaridade.id);
+      const escolaridadeIds = data.escolaridade.map((escolaridade) => escolaridade.id);
 
-    setData(
-      response.data.filter(
-        (pessoa) =>
-          (data.idadeIni ? Number(data.idadeIni) <= pessoa.idade : true) &&
-          (data.idadeFim ? Number(data.idadeFim) >= pessoa.idade : true) &&
-          (escolaridadeIds.length ? escolaridadeIds.includes(pessoa.escolaridade) : true)
-      )
-    );
+      setData(
+        response.data.filter(
+          (pessoa) =>
+            (data.idadeIni ? Number(data.idadeIni) <= pessoa.idade : true) &&
+            (data.idadeFim ? Number(data.idadeFim) >= pessoa.idade : true) &&
+            (escolaridadeIds.length ? escolaridadeIds.includes(pessoa.escolaridade) : true)
+        )
+      );
+    } catch (e) {
+      toast.error(`${e}`);
+    }
 
     setLoadingInfo({
       isLoading: false,
